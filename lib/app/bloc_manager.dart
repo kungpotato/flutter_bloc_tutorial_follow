@@ -1,0 +1,28 @@
+import 'package:authentication_repository/authentication_repository.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertodo/authentication/bloc/authentication_bloc.dart';
+import 'package:fluttertodo/theme/cubit/theme_cubit.dart';
+import 'package:get_it/get_it.dart';
+import 'package:user_repository/user_repository.dart';
+
+final getIt = GetIt.instance;
+
+class BlocManager {
+  static final BlocManager _instance = BlocManager._internal();
+
+  factory BlocManager() {
+    return _instance;
+  }
+
+  BlocManager._internal();
+
+  List<BlocProvider> get blocProviders {
+    return [
+      BlocProvider<ThemeCubit>(create: (_) => ThemeCubit()),
+      BlocProvider<AuthenticationBloc>(
+          create: (_) => AuthenticationBloc(
+              authenticationRepository: getIt<AuthenticationRepository>(),
+              userRepository: getIt<UserRepository>())),
+    ];
+  }
+}
