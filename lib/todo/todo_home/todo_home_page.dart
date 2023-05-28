@@ -10,10 +10,7 @@ class TodoHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => HomeCubit(),
-      child: const HomeView(),
-    );
+    return BlocProvider(create: (_) => HomeCubit(), child: const HomeView());
   }
 }
 
@@ -26,15 +23,13 @@ class HomeView extends StatelessWidget {
 
     return Scaffold(
       body: IndexedStack(
-        index: selectedTab.index,
-        children: const [TodosOverviewPage(), StatsPage()],
-      ),
+          index: selectedTab.index,
+          children: const [TodosOverviewPage(), StatsPage()]),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
-        key: const Key('homeView_addTodo_floatingActionButton'),
-        onPressed: () => Navigator.of(context).push(EditTodoPage.route()),
-        child: const Icon(Icons.add),
-      ),
+          key: const Key('homeView_addTodo_floatingActionButton'),
+          onPressed: () => Navigator.of(context).push(EditTodoPage.route()),
+          child: const Icon(Icons.add)),
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
         child: Row(
@@ -46,10 +41,9 @@ class HomeView extends StatelessWidget {
               icon: const Icon(Icons.list_rounded),
             ),
             _HomeTabButton(
-              groupValue: selectedTab,
-              value: HomeTab.stats,
-              icon: const Icon(Icons.show_chart_rounded),
-            ),
+                groupValue: selectedTab,
+                value: HomeTab.stats,
+                icon: const Icon(Icons.show_chart_rounded)),
           ],
         ),
       ),
