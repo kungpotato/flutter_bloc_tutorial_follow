@@ -17,4 +17,4 @@ samples, guidance on mobile development, and a full API reference.
 
 ## Architecture
 
-![Banner](https://github.com/haonguyenuet/ecommerce-flutter-firebase/blob/main/screenshots/banner.png)
+![Banner](https://bloclibrary.dev/_snippets/flutter_todos_tutorial/images/todos_architecture_light.png)
