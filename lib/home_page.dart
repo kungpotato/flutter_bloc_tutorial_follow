@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertodo/counter/view/counter_page.dart';
 import 'package:fluttertodo/posts/view/posts_page.dart';
 import 'package:fluttertodo/timer/view/timer_page.dart';
+import 'package:fluttertodo/todo/todo_home/todo_home_page.dart';
 import 'package:fluttertodo/weather/weather_page.dart';
 
 import 'authentication/bloc/authentication_bloc.dart';
@@ -73,6 +74,16 @@ class _HomePageState extends State<HomePage> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => const WeatherPage(),
+                  ));
+            },
+          ),
+          ListTile(
+            title: const Text('Todo'),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const TodoHomePage(),
                   ));
             },
           ),

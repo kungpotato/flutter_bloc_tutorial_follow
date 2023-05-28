@@ -2,8 +2,12 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertodo/home_page.dart';
+import 'package:fluttertodo/l10n/l10n.dart';
 import 'package:fluttertodo/theme/cubit/theme_cubit.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:local_storage_todos_api/local_storage_todos_api.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:todos_repository/todos_repository.dart';
 import 'package:user_repository/user_repository.dart';
 import 'package:weather_repository/weather_repository.dart';
 
@@ -22,6 +26,15 @@ class _AppState extends State<App> {
   late final AuthenticationRepository _authenticationRepository;
   late final UserRepository _userRepository;
   late final WeatherRepository _weatherRepository;
+  TodosRepository? _todosRepository;
+
+  setup() async {
+    final todosApi = LocalStorageTodosApi(
+      plugin: await SharedPreferences.getInstance(),
+    );
+
+    _todosRepository = TodosRepository(todosApi: todosApi);
+  }
 
   @override
   void initState() {
@@ -29,6 +42,7 @@ class _AppState extends State<App> {
     _authenticationRepository = AuthenticationRepository();
     _userRepository = UserRepository();
     _weatherRepository = WeatherRepository();
+    setup();
   }
 
   @override
@@ -42,7 +56,8 @@ class _AppState extends State<App> {
     return MultiRepositoryProvider(
         providers: [
           RepositoryProvider.value(value: _authenticationRepository),
-          RepositoryProvider.value(value: _weatherRepository)
+          RepositoryProvider.value(value: _weatherRepository),
+          RepositoryProvider.value(value: _todosRepository)
         ],
         child: MultiBlocProvider(providers: [
           BlocProvider(
@@ -72,6 +87,8 @@ class _AppViewState extends State<AppView> {
     final textTheme = Theme.of(context).textTheme;
     return BlocBuilder<ThemeCubit, Color>(
         builder: (context, color) => MaterialApp(
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
               theme: ThemeData(
                 primaryColor: color,
                 textTheme: GoogleFonts.rajdhaniTextTheme(),
