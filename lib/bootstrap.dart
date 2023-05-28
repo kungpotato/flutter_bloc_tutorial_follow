@@ -3,7 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertodo/app.dart';
+import 'package:fluttertodo/app/app.dart';
 import 'package:fluttertodo/counter_observer.dart';
 import 'package:fluttertodo/simple_bloc_observer.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';

@@ -1,19 +1,20 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertodo/app/locator.dart';
+import 'package:fluttertodo/authentication/bloc/authentication_bloc.dart';
+import 'package:fluttertodo/authentication/view/splash_page.dart';
 import 'package:fluttertodo/home_page.dart';
 import 'package:fluttertodo/l10n/l10n.dart';
+import 'package:fluttertodo/login/login.dart';
 import 'package:fluttertodo/theme/cubit/theme_cubit.dart';
+import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:local_storage_todos_api/local_storage_todos_api.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todos_repository/todos_repository.dart';
 import 'package:user_repository/user_repository.dart';
 import 'package:weather_repository/weather_repository.dart';
 
-import 'authentication/bloc/authentication_bloc.dart';
-import 'authentication/view/splash_page.dart';
-import 'login/login.dart';
+final getIt = GetIt.instance;
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -23,31 +24,15 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  late final AuthenticationRepository _authenticationRepository;
-  late final UserRepository _userRepository;
-  late final WeatherRepository _weatherRepository;
-  TodosRepository? _todosRepository;
-
-  setup() async {
-    final todosApi = LocalStorageTodosApi(
-      plugin: await SharedPreferences.getInstance(),
-    );
-
-    _todosRepository = TodosRepository(todosApi: todosApi);
-  }
-
   @override
   void initState() {
     super.initState();
-    _authenticationRepository = AuthenticationRepository();
-    _userRepository = UserRepository();
-    _weatherRepository = WeatherRepository();
-    setup();
+    locatorSetup();
   }
 
   @override
   void dispose() {
-    _authenticationRepository.dispose();
+    getIt<AuthenticationRepository>().dispose();
     super.dispose();
   }
 
@@ -55,15 +40,25 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
         providers: [
-          RepositoryProvider.value(value: _authenticationRepository),
-          RepositoryProvider.value(value: _weatherRepository),
-          RepositoryProvider.value(value: _todosRepository)
+          RepositoryProvider<AuthenticationRepository>(
+            create: (context) => getIt(),
+          ),
+          RepositoryProvider<UserRepository>(
+            create: (context) => getIt(),
+          ),
+          RepositoryProvider<WeatherRepository>(
+            create: (context) => getIt(),
+          ),
+          RepositoryProvider<TodosRepository>(
+            create: (context) => getIt(),
+          ),
         ],
         child: MultiBlocProvider(providers: [
           BlocProvider(
             create: (_) => AuthenticationBloc(
-                authenticationRepository: _authenticationRepository,
-                userRepository: _userRepository),
+              authenticationRepository: getIt<AuthenticationRepository>(),
+              userRepository: getIt<UserRepository>(),
+            ),
           ),
           BlocProvider(create: (_) => ThemeCubit())
         ], child: const AppView()));
@@ -108,11 +103,13 @@ class _AppViewState extends State<AppView> {
                           HomePage.route(),
                           (route) => false,
                         );
+                        break;
                       case AuthenticationStatus.unauthenticated:
                         _navigator.pushAndRemoveUntil<void>(
                           LoginPage.route(),
                           (route) => false,
                         );
+                        break;
                       case AuthenticationStatus.unknown:
                         break;
                     }
