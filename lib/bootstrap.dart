@@ -20,9 +20,7 @@ void bootstrap() async {
       };
 
       HydratedBloc.storage = await HydratedStorage.build(
-        storageDirectory: kIsWeb
-            ? HydratedStorage.webStorageDirectory
-            : await getTemporaryDirectory(),
+        storageDirectory: await getTemporaryDirectory(),
       );
 
       Bloc.observer = const CounterObserver();

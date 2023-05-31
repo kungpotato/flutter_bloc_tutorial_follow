@@ -16,13 +16,20 @@ class BlocManager {
 
   BlocManager._internal();
 
+  static final themeCubit = ThemeCubit();
+  static final authBloc = AuthenticationBloc(
+      authenticationRepository: getIt<AuthenticationRepository>(),
+      userRepository: getIt<UserRepository>());
+
   List<BlocProvider> get blocProviders {
     return [
       BlocProvider<ThemeCubit>(create: (_) => ThemeCubit()),
-      BlocProvider<AuthenticationBloc>(
-          create: (_) => AuthenticationBloc(
-              authenticationRepository: getIt<AuthenticationRepository>(),
-              userRepository: getIt<UserRepository>())),
+      BlocProvider<AuthenticationBloc>(create: (_) => authBloc),
     ];
+  }
+
+  static void dispose() {
+    themeCubit.close();
+    authBloc.close();
   }
 }

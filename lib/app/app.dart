@@ -34,6 +34,7 @@ class _AppState extends State<App> {
   @override
   void dispose() {
     repositoryManager.dispose();
+    BlocManager.dispose();
     super.dispose();
   }
 

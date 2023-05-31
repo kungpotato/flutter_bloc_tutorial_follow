@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fluttertodo/theme/cubit/theme_cubit.dart';
 import 'package:fluttertodo/weather/models/models.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:weather_repository/weather_repository.dart'
     as weather_repository;
 
@@ -18,11 +20,22 @@ class MockWeather extends Mock implements Weather {
 }
 
 void main() {
-  // initHydratedStorage();
-
   group('ThemeCubit', () {
+    late ThemeCubit themeCubit;
+
+    setUp(() async {
+      WidgetsFlutterBinding.ensureInitialized();
+      HydratedBloc.storage = await HydratedStorage.build(
+          storageDirectory: await getTemporaryDirectory());
+      themeCubit = ThemeCubit();
+    });
+
+    tearDown(() {
+      themeCubit.close();
+    });
+
     test('initial state is correct', () {
-      expect(ThemeCubit().state, ThemeCubit.defaultColor);
+      expect(themeCubit.state, ThemeCubit.defaultColor);
     });
 
     group('toJson/fromJson', () {
@@ -34,6 +47,16 @@ void main() {
         );
       });
     });
+
+    blocTest<ThemeCubit, Color>(
+      'emits new color when updateTheme(Weather) is called',
+      build: () => themeCubit,
+      act: (cubit) => cubit
+          .updateTheme(MockWeather(weather_repository.WeatherCondition.clear)),
+      expect: () => [
+        Colors.orangeAccent,
+      ],
+    );
 
     group('updateTheme', () {
       final clearWeather =
