@@ -9,10 +9,7 @@ import 'package:fluttertodo/home_page.dart';
 import 'package:fluttertodo/l10n/l10n.dart';
 import 'package:fluttertodo/login/login.dart';
 import 'package:fluttertodo/theme/cubit/theme_cubit.dart';
-import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-final getIt = GetIt.instance;
 
 class App extends StatefulWidget {
   const App({super.key});
